@@ -913,6 +913,11 @@ msgstr ""
 msgid "{tabCount} tabs"
 msgstr ""
 
+#. js-lingui-id: g8emNl
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "{totalCountOpenTasks, plural, one {# item} other {# items}}"
+msgstr ""
+
 #. js-lingui-id: XdG+hI
 #: src/modules/side-panel/pages/page-layout/components/record-page/SidePanelRecordPageFieldsSettings.tsx
 msgid "{totalFieldsCount} visible fields"
@@ -13972,6 +13977,7 @@ msgid "Load limit"
 msgstr ""
 
 #. js-lingui-id: yQ2kGp
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
 #: src/modules/object-record/record-table/record-table-section/components/RecordTableRecordGroupSectionLoadMore.tsx
 msgid "Load more"
 msgstr ""
@@ -16031,6 +16037,11 @@ msgstr ""
 msgid "No matching people or roles"
 msgstr ""
 
+#. js-lingui-id: zfB5Bv
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "No matching tasks"
+msgstr ""
+
 #. js-lingui-id: UwvrGq
 #: src/pages/settings/members/tabs/SettingsWorkspaceMembersTeamTab.tsx
 msgid "No members"
@@ -16080,6 +16091,11 @@ msgstr ""
 #. js-lingui-id: 9VrTfZ
 #: src/modules/activities/notes/components/NotesCardContent.tsx
 msgid "No notes"
+msgstr ""
+
+#. js-lingui-id: AxwWFX
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "No open tasks"
 msgstr ""
 
 #. js-lingui-id: daCzI1
@@ -17254,6 +17270,16 @@ msgstr ""
 #. js-lingui-id: bY2Xkv
 #: src/modules/sign-in-background-mock/components/BackgroundMockPage.tsx
 msgid "Open side panel"
+msgstr ""
+
+#. js-lingui-id: VVBlwg
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Open tasks"
+msgstr ""
+
+#. js-lingui-id: oiiAh4
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Open Tasks"
 msgstr ""
 
 #. js-lingui-id: sBd/cl
@@ -20535,6 +20561,11 @@ msgstr ""
 msgid "Search objects"
 msgstr ""
 
+#. js-lingui-id: pNIofg
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Search open tasks"
+msgstr ""
+
 #. js-lingui-id: pGn7U0
 #: src/modules/side-panel/pages/page-layout/components/dropdown-content/ChartAggregateOperationSelectionDropdownContent.tsx
 msgid "Search operations"
@@ -20576,6 +20607,11 @@ msgstr ""
 #: src/modules/workflow/workflow-variables/components/WorkflowVariablesDropdownSteps.tsx
 #: src/modules/workflow/workflow-variables/components/WorkflowVariablesDropdownSteps.tsx
 msgid "Search steps and fields"
+msgstr ""
+
+#. js-lingui-id: bQJWgo
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Search this list..."
 msgstr ""
 
 #. js-lingui-id: rws5EE
@@ -25010,6 +25046,11 @@ msgstr ""
 #. js-lingui-id: xzOKup
 #: src/modules/settings/roles/role/components/SettingsRoleCreateEffect.tsx
 msgid "Untitled role"
+msgstr ""
+
+#. js-lingui-id: CowgFX
+#: src/modules/activities/tasks/components/OpenTaskRow.tsx
+msgid "Untitled task"
 msgstr ""
 
 #. js-lingui-id: jxRjAG

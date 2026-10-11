@@ -1,4 +1,7 @@
 import { RecordIndexContextProvider } from '@/object-record/record-index/contexts/RecordIndexContext';
+import { OpenTasksPanel } from '@/activities/tasks/components/OpenTasksPanel';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
+import { useWorkspaceSurface } from '@/ui/layout/hooks/useWorkspaceSurface';
 
 import { getCommandMenuIdFromRecordIndexId } from '@/command-menu-item/utils/getCommandMenuIdFromRecordIndexId';
 import { CommandMenuComponentInstanceContext } from '@/command-menu/states/contexts/CommandMenuComponentInstanceContext';
@@ -56,6 +59,12 @@ export const RecordIndexContainerGater = memo(() => {
 
   const hasObjectReadPermissions = objectPermissions.canReadObjectRecords;
 
+  const workspaceSurface = useWorkspaceSurface();
+
+  const shouldShowOpenTasksPanel =
+    objectMetadataItem.nameSingular === CoreObjectNameSingular.Task &&
+    workspaceSurface.type !== 'side-panel';
+
   const {
     fieldDefinitionByFieldMetadataItemId,
     fieldMetadataItemByFieldMetadataItemId,
@@ -72,6 +81,7 @@ export const RecordIndexContainerGater = memo(() => {
         <>
           <RecordIndexContainerContextStoreNumberOfSelectedRecordsEffect />
           <RecordIndexContainer />
+          {shouldShowOpenTasksPanel && <OpenTasksPanel />}
         </>
       ) : (
         <RecordIndexEmptyStateNotShared />

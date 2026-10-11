@@ -918,6 +918,11 @@ msgstr "{storedToolName} (ikke tilgængeligt for dig)"
 msgid "{tabCount} tabs"
 msgstr "{tabCount} faner"
 
+#. js-lingui-id: g8emNl
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "{totalCountOpenTasks, plural, one {# item} other {# items}}"
+msgstr ""
+
 #. js-lingui-id: XdG+hI
 #: src/modules/side-panel/pages/page-layout/components/record-page/SidePanelRecordPageFieldsSettings.tsx
 msgid "{totalFieldsCount} visible fields"
@@ -14000,6 +14005,7 @@ msgid "Load limit"
 msgstr "Indlæsningsgrænse"
 
 #. js-lingui-id: yQ2kGp
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
 #: src/modules/object-record/record-table/record-table-section/components/RecordTableRecordGroupSectionLoadMore.tsx
 msgid "Load more"
 msgstr "Indlæs mere"
@@ -16059,6 +16065,11 @@ msgstr "Ingen matchende aktivitet"
 msgid "No matching people or roles"
 msgstr "Ingen matchende personer eller roller"
 
+#. js-lingui-id: zfB5Bv
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "No matching tasks"
+msgstr ""
+
 #. js-lingui-id: UwvrGq
 #: src/pages/settings/members/tabs/SettingsWorkspaceMembersTeamTab.tsx
 msgid "No members"
@@ -16109,6 +16120,11 @@ msgstr "Ingen model er tilgængelig for denne tilstand."
 #: src/modules/activities/notes/components/NotesCardContent.tsx
 msgid "No notes"
 msgstr "Ingen noter"
+
+#. js-lingui-id: AxwWFX
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "No open tasks"
+msgstr ""
 
 #. js-lingui-id: daCzI1
 #: src/modules/ui/field/input/components/MultiSelectInput.tsx
@@ -17283,6 +17299,16 @@ msgstr "Åbn indstillinger"
 #: src/modules/sign-in-background-mock/components/BackgroundMockPage.tsx
 msgid "Open side panel"
 msgstr "Åbn sidepanelet"
+
+#. js-lingui-id: VVBlwg
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Open tasks"
+msgstr ""
+
+#. js-lingui-id: oiiAh4
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Open Tasks"
+msgstr ""
 
 #. js-lingui-id: sBd/cl
 #: src/modules/settings/mcp-and-apis/utils/buildMcpSetupCategories.tsx
@@ -20563,6 +20589,11 @@ msgstr "Søg efter medlemmer"
 msgid "Search objects"
 msgstr "Søg objekter"
 
+#. js-lingui-id: pNIofg
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Search open tasks"
+msgstr ""
+
 #. js-lingui-id: pGn7U0
 #: src/modules/side-panel/pages/page-layout/components/dropdown-content/ChartAggregateOperationSelectionDropdownContent.tsx
 msgid "Search operations"
@@ -20605,6 +20636,11 @@ msgstr "Søg efter færdigheder"
 #: src/modules/workflow/workflow-variables/components/WorkflowVariablesDropdownSteps.tsx
 msgid "Search steps and fields"
 msgstr "Søg i trin og felter"
+
+#. js-lingui-id: bQJWgo
+#: src/modules/activities/tasks/components/OpenTasksPanel.tsx
+msgid "Search this list..."
+msgstr ""
 
 #. js-lingui-id: rws5EE
 #: src/modules/object-record/record-field/ui/form-types/components/FormWorkspaceMemberFilterValueInputDropdownContent.tsx
@@ -25071,6 +25107,11 @@ msgstr "Unavngivet liste"
 #: src/modules/settings/roles/role/components/SettingsRoleCreateEffect.tsx
 msgid "Untitled role"
 msgstr "Uden titel rolle"
+
+#. js-lingui-id: CowgFX
+#: src/modules/activities/tasks/components/OpenTaskRow.tsx
+msgid "Untitled task"
+msgstr ""
 
 #. js-lingui-id: jxRjAG
 #: src/modules/activities/emails/components/CampaignDetailsFields.tsx
