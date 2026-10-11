@@ -1,0 +1,74 @@
+x-twenty-environment: &twenty-environment
+  PG_DATABASE_URL: postgres://postgres:${PG_DATABASE_PASSWORD}@db:5432/default
+  SERVER_URL: ${SERVER_URL}
+  REDIS_URL: redis://redis:6379
+  STORAGE_TYPE: local
+  ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+  APP_SECRET: ${APP_SECRET}
+
+services:
+  server:
+    image: ${IMAGE}:${TAG}
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    ports:
+      - '127.0.0.1:${HOST_PORT}:3000'
+    environment:
+      <<: *twenty-environment
+      NODE_PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:3000/healthz
+      interval: 5s
+      timeout: 5s
+      retries: 60
+    restart: unless-stopped
+
+  worker:
+    image: ${IMAGE}:${TAG}
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    command: ['yarn', 'worker:prod']
+    environment:
+      <<: *twenty-environment
+      DISABLE_DB_MIGRATIONS: 'true'
+      DISABLE_CRON_JOBS_REGISTRATION: 'true'
+    depends_on:
+      db:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: default
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${PG_DATABASE_PASSWORD}
+    healthcheck:
+      test: pg_isready -U postgres -h localhost -d postgres
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    command: ['--maxmemory-policy', 'noeviction']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  server-local-data:
