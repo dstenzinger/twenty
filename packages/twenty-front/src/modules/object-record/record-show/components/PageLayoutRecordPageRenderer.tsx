@@ -12,6 +12,7 @@ import { type TargetRecordIdentifier } from '@/ui/layout/contexts/TargetRecordId
 import { useWorkspaceSurface } from '@/ui/layout/hooks/useWorkspaceSurface';
 import { SidePanelFooter } from '@/ui/layout/side-panel/components/SidePanelFooter';
 import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
+import { TargetPathBars } from '@/targets/components/TargetPathBars';
 import { styled } from '@linaria/react';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
@@ -77,6 +78,11 @@ export const PageLayoutRecordPageRenderer = ({
       )}
 
       <StyledShowPageRightContainer data-record-show-page-body="">
+        {!isInSidePanel &&
+          targetRecordIdentifier.targetObjectNameSingular ===
+            CoreObjectNameSingular.Opportunity && (
+            <TargetPathBars recordId={targetRecordIdentifier.id} />
+          )}
         <StyledContentContainer>
           <LayoutRenderingProvider
             value={{

@@ -14468,6 +14468,22 @@ msgstr "Vald manuellt för detta läge."
 msgid "Margin"
 msgstr "Marginal"
 
+#. js-lingui-id: jUdQDG
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Mark as Current Stage"
+msgstr ""
+
+#. js-lingui-id: FFViQO
+#: src/modules/targets/components/TargetPathBars.tsx
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Mark as Current Status"
+msgstr ""
+
+#. js-lingui-id: HD2KPc
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Mark Stage as Complete"
+msgstr ""
+
 #. js-lingui-id: fI1Tll
 #: src/pages/settings/admin-panel/SettingsAdminApplicationRegistrationGeneralSwitches.tsx
 msgid "Mark this app as reviewed and approved"
@@ -22270,6 +22286,11 @@ msgstr ""
 msgid "Stacks on top of your plan and never expires"
 msgstr "Läggs ovanpå din plan och upphör aldrig att gälla"
 
+#. js-lingui-id: 3PRxO3
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Stage"
+msgstr ""
+
 #. js-lingui-id: ErU1td
 #: src/modules/views/view-picker/components/ViewPickerContentCreateMode.tsx
 msgid "Stages"
@@ -22375,6 +22396,7 @@ msgstr "Statisk text som delas på alla postsidor"
 #: src/modules/settings/app-preferences/components/SettingsNativeAccountAppsSection.tsx
 #: src/modules/settings/components/SettingsDnsRecordsTable.tsx
 #: src/modules/settings/data-model/object-details/components/tabs/SettingsObjectValidationRulesSection.tsx
+#: src/modules/targets/components/TargetPathBars.tsx
 #: src/pages/settings/admin-panel/SettingsAdminApplicationRegistrationClaims.tsx
 #: src/pages/settings/admin-panel/SettingsAdminIndicatorHealthStatus.tsx
 #: src/pages/settings/admin-panel/SettingsAdminInstanceStatus.tsx

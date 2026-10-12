@@ -14445,6 +14445,22 @@ msgstr "已为此模式手动选择。"
 msgid "Margin"
 msgstr "边距"
 
+#. js-lingui-id: jUdQDG
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Mark as Current Stage"
+msgstr ""
+
+#. js-lingui-id: FFViQO
+#: src/modules/targets/components/TargetPathBars.tsx
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Mark as Current Status"
+msgstr ""
+
+#. js-lingui-id: HD2KPc
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Mark Stage as Complete"
+msgstr ""
+
 #. js-lingui-id: fI1Tll
 #: src/pages/settings/admin-panel/SettingsAdminApplicationRegistrationGeneralSwitches.tsx
 msgid "Mark this app as reviewed and approved"
@@ -22243,6 +22259,11 @@ msgstr ""
 msgid "Stacks on top of your plan and never expires"
 msgstr "叠加在您的套餐之上，且永不过期"
 
+#. js-lingui-id: 3PRxO3
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Stage"
+msgstr ""
+
 #. js-lingui-id: ErU1td
 #: src/modules/views/view-picker/components/ViewPickerContentCreateMode.tsx
 msgid "Stages"
@@ -22348,6 +22369,7 @@ msgstr "在所有记录页面之间共享的静态文本"
 #: src/modules/settings/app-preferences/components/SettingsNativeAccountAppsSection.tsx
 #: src/modules/settings/components/SettingsDnsRecordsTable.tsx
 #: src/modules/settings/data-model/object-details/components/tabs/SettingsObjectValidationRulesSection.tsx
+#: src/modules/targets/components/TargetPathBars.tsx
 #: src/pages/settings/admin-panel/SettingsAdminApplicationRegistrationClaims.tsx
 #: src/pages/settings/admin-panel/SettingsAdminIndicatorHealthStatus.tsx
 #: src/pages/settings/admin-panel/SettingsAdminInstanceStatus.tsx
