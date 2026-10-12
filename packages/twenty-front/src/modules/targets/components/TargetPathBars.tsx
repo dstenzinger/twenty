@@ -65,7 +65,7 @@ export const TargetPathBars = ({ recordId }: TargetPathBarsProps) => {
           label={t`Stage`}
           options={stageOptions}
           currentValue={isString(stageValue) ? stageValue : null}
-          isSequential
+          showsCompletedSteps
           advanceLabel={t`Mark Stage as Complete`}
           selectLabel={t`Mark as Current Stage`}
           onChange={updateField(STAGE_FIELD_NAME)}
@@ -76,8 +76,8 @@ export const TargetPathBars = ({ recordId }: TargetPathBarsProps) => {
           label={t`Status`}
           options={statusOptions}
           currentValue={isString(statusValue) ? statusValue : null}
-          isSequential={false}
-          advanceLabel={t`Mark as Current Status`}
+          showsCompletedSteps={false}
+          advanceLabel={t`Next Status`}
           selectLabel={t`Mark as Current Status`}
           onChange={updateField(STATUS_FIELD_NAME)}
         />

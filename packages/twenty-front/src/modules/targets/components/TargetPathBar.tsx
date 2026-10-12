@@ -88,7 +88,7 @@ type TargetPathBarProps = {
   label: string;
   options: FieldMetadataItemOption[];
   currentValue: string | null;
-  isSequential: boolean;
+  showsCompletedSteps: boolean;
   advanceLabel: string;
   selectLabel: string;
   onChange: (value: string) => void;
@@ -98,7 +98,7 @@ export const TargetPathBar = ({
   label,
   options,
   currentValue,
-  isSequential,
+  showsCompletedSteps,
   advanceLabel,
   selectLabel,
   onChange,
@@ -118,7 +118,7 @@ export const TargetPathBar = ({
       ? selectedValue
       : null;
 
-  const nextOption = isSequential ? sortedOptions[currentIndex + 1] : undefined;
+  const nextOption = sortedOptions[currentIndex + 1];
 
   const getStepState = (index: number, value: string): StepState => {
     if (value === pendingValue) {
@@ -127,7 +127,7 @@ export const TargetPathBar = ({
     if (index === currentIndex) {
       return 'current';
     }
-    if (isSequential && currentIndex >= 0 && index < currentIndex) {
+    if (showsCompletedSteps && currentIndex >= 0 && index < currentIndex) {
       return 'completed';
     }
     return 'upcoming';

@@ -14475,7 +14475,6 @@ msgstr ""
 
 #. js-lingui-id: FFViQO
 #: src/modules/targets/components/TargetPathBars.tsx
-#: src/modules/targets/components/TargetPathBars.tsx
 msgid "Mark as Current Status"
 msgstr ""
 
@@ -15641,6 +15640,11 @@ msgstr "הבקשה הבאה"
 #: src/modules/settings/applications/components/SettingsApplicationScreenshotLightbox.tsx
 msgid "Next screenshot"
 msgstr "צילום המסך הבא"
+
+#. js-lingui-id: +RW4Bz
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Next Status"
+msgstr ""
 
 #. js-lingui-id: AxNmtI
 #: src/modules/spreadsheet-import/steps/components/MatchColumnsStep/MatchColumnsStep.tsx

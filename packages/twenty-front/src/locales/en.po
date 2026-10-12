@@ -14470,7 +14470,6 @@ msgstr "Mark as Current Stage"
 
 #. js-lingui-id: FFViQO
 #: src/modules/targets/components/TargetPathBars.tsx
-#: src/modules/targets/components/TargetPathBars.tsx
 msgid "Mark as Current Status"
 msgstr "Mark as Current Status"
 
@@ -15636,6 +15635,11 @@ msgstr "Next request"
 #: src/modules/settings/applications/components/SettingsApplicationScreenshotLightbox.tsx
 msgid "Next screenshot"
 msgstr "Next screenshot"
+
+#. js-lingui-id: +RW4Bz
+#: src/modules/targets/components/TargetPathBars.tsx
+msgid "Next Status"
+msgstr "Next Status"
 
 #. js-lingui-id: AxNmtI
 #: src/modules/spreadsheet-import/steps/components/MatchColumnsStep/MatchColumnsStep.tsx

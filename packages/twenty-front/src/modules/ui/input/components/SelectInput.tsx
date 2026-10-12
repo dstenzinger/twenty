@@ -32,17 +32,8 @@ export const SelectInput = ({
     options,
     searchFilter,
   });
-  const selectedOption = filteredOptions.find(
-    (option) => option.value === value,
-  );
-  const optionsInDropdown = isDefined(selectedOption)
-    ? [
-        selectedOption,
-        ...filteredOptions.filter(
-          (option) => option.value !== selectedOption.value,
-        ),
-      ]
-    : filteredOptions;
+  // Options keep their configured order so ordered fields like stages read top to bottom
+  const optionsInDropdown = filteredOptions;
   const emptyLabel = isNonEmptyString(clearLabel) ? t`No ${clearLabel}` : '';
   const shouldShowClearOption =
     isDefined(onClear) &&
