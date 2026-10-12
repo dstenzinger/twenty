@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. /www/cgi-bin/common.sh
+
+if [ "$REQUEST_METHOD" != "POST" ] || ! is_allowed_origin; then
+  printf 'Status: 403 Forbidden\r\nContent-Type: application/json\r\n\r\n{"error":"forbidden"}'
+  exit 0
+fi
+
+crm-ops update-async
+write_headers
+printf '{"state":"updating"}'

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. /www/cgi-bin/common.sh
+
+write_headers
+crm-ops status

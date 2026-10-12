@@ -69,6 +69,29 @@ services:
       retries: 10
     restart: unless-stopped
 
+  ops:
+    image: ${OPS_IMAGE:-ghcr.io/dstenzinger/twenty-ops:latest}
+    profiles: ['ops']
+    environment:
+      TZ: ${TZ:-America/New_York}
+      CRM_PROJECT: ${COMPOSE_PROJECT_NAME:-twenty-crm}
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: .
+        target: /crm
+        read_only: true
+      - type: bind
+        source: ${BACKUP_DIR:-./backups}
+        target: /backups
+      - ops-state:/state
+    ports:
+      - '127.0.0.1:${OPS_PORT:-3010}:8080'
+    restart: unless-stopped
+
 volumes:
   db-data:
   server-local-data:
+  ops-state:
