@@ -120,15 +120,19 @@ function Register-CrmTasks {
     $scriptPath = Join-Path $Root 'crm.ps1'
     $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopIfGoingOnBatteries -AllowStartIfOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 1)
 
-    $updateAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$scriptPath`" update"
-    $updateTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 10) -RepetitionDuration (New-TimeSpan -Days 3650)
-    Register-ScheduledTask -TaskName 'Twenty CRM - Update' -Action $updateAction -Trigger $updateTrigger -Settings $settings -Force | Out-Null
+    # conhost --headless keeps PowerShell from flashing a console window when the task fires
+    $newHiddenAction = {
+        param([string]$TaskCommand)
+        New-ScheduledTaskAction -Execute 'conhost.exe' -Argument "--headless powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`" $TaskCommand"
+    }
 
-    $backupAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$scriptPath`" backup"
+    $updateTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At '21:00'
+    Register-ScheduledTask -TaskName 'Twenty CRM - Update' -Action (& $newHiddenAction 'update') -Trigger $updateTrigger -Settings $settings -Force | Out-Null
+
     $backupTrigger = New-ScheduledTaskTrigger -Daily -At '12:00'
-    Register-ScheduledTask -TaskName 'Twenty CRM - Backup' -Action $backupAction -Trigger $backupTrigger -Settings $settings -Force | Out-Null
+    Register-ScheduledTask -TaskName 'Twenty CRM - Backup' -Action (& $newHiddenAction 'backup') -Trigger $backupTrigger -Settings $settings -Force | Out-Null
 
-    Write-Log 'Scheduled automatic updates (every 10 minutes) and a daily backup.'
+    Write-Log 'Scheduled a weekly update (Sundays 9pm) and a daily backup, both running in the background.'
 }
 
 switch ($Command) {
