@@ -1,6 +1,6 @@
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('setup', 'start', 'stop', 'status', 'update', 'backup', 'dev', 'dev-stop', 'phone', 'logs')]
+    [ValidateSet('setup', 'start', 'stop', 'status', 'update', 'backup', 'maintenance', 'dev', 'dev-stop', 'phone', 'logs')]
     [string]$Command = 'status',
 
     [Parameter(Position = 1)]
@@ -21,6 +21,12 @@ $ProdPort = 3000
 $DevPort = 3001
 $DevTailscalePort = 8443
 $BackupsToKeep = 14
+$StateDirectory = Join-Path $Root 'state'
+$UpdateInterval = New-TimeSpan -Days 7
+$BackupInterval = New-TimeSpan -Days 1
+$DockerStartupWait = New-TimeSpan -Minutes 5
+$MaintenanceTaskName = 'Twenty CRM - Maintenance'
+$LegacyTaskNames = @('Twenty CRM - Update', 'Twenty CRM - Backup')
 
 function Write-Log([string]$Message) {
     New-Item -ItemType Directory -Force -Path $LogDirectory | Out-Null
@@ -116,23 +122,65 @@ function Get-BackupDirectory {
     return $directory
 }
 
-function Register-CrmTasks {
-    $scriptPath = Join-Path $Root 'crm.ps1'
-    $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopIfGoingOnBatteries -AllowStartIfOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 1)
+function Get-LastRun([string]$Name) {
+    $path = Join-Path $StateDirectory "last-$Name.txt"
+    if (-not (Test-Path $path)) { return [datetime]::MinValue }
+    return [datetime]::Parse((Get-Content $path -Raw).Trim(), [System.Globalization.CultureInfo]::InvariantCulture)
+}
 
-    # conhost --headless keeps PowerShell from flashing a console window when the task fires
-    $newHiddenAction = {
-        param([string]$TaskCommand)
-        New-ScheduledTaskAction -Execute 'conhost.exe' -Argument "--headless powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`" $TaskCommand"
+function Set-LastRun([string]$Name) {
+    New-Item -ItemType Directory -Force -Path $StateDirectory | Out-Null
+    Set-Content -Path (Join-Path $StateDirectory "last-$Name.txt") -Value ((Get-Date).ToString('o'))
+}
+
+function Test-Due([string]$Name, [timespan]$Interval) {
+    return ((Get-Date) - (Get-LastRun $Name)) -ge $Interval
+}
+
+function Wait-ForDocker {
+    $deadline = (Get-Date) + $DockerStartupWait
+    while ((Get-Date) -lt $deadline) {
+        if (Test-DockerRunning) { return $true }
+        Start-Sleep -Seconds 15
+    }
+    return (Test-DockerRunning)
+}
+
+function Invoke-Update {
+    Update-Project $ProdProject $ProdEnvFile
+    if (Test-ProjectRunning $DevProject) { Update-Project $DevProject $DevEnvFile }
+    Set-LastRun 'update'
+}
+
+function Invoke-Backup {
+    $directory = Get-BackupDirectory
+    $stamp = Get-Date -Format 'yyyy-MM-dd_HHmm'
+    Invoke-Compose $ProdProject $ProdEnvFile @('exec', '-T', 'db', 'pg_dump', '-U', 'postgres', '-d', 'default', '-Fc', '-f', '/tmp/crm-backup.dump')
+    Invoke-Compose $ProdProject $ProdEnvFile @('cp', 'db:/tmp/crm-backup.dump', (Join-Path $directory "crm-database_$stamp.dump"))
+    Invoke-Compose $ProdProject $ProdEnvFile @('exec', '-T', 'server', 'tar', 'czf', '/tmp/crm-files.tgz', '-C', '/app/packages/twenty-server', '.local-storage')
+    Invoke-Compose $ProdProject $ProdEnvFile @('cp', 'server:/tmp/crm-files.tgz', (Join-Path $directory "crm-files_$stamp.tgz"))
+    foreach ($pattern in @('crm-database_*.dump', 'crm-files_*.tgz')) {
+        Get-ChildItem $directory -Filter $pattern | Sort-Object Name -Descending | Select-Object -Skip $BackupsToKeep | Remove-Item -Force
+    }
+    Set-LastRun 'backup'
+    Write-Log "Backup saved to $directory"
+}
+
+function Register-CrmTasks {
+    foreach ($taskName in $LegacyTaskNames) {
+        if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
+            Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+        }
     }
 
-    $updateTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At '21:00'
-    Register-ScheduledTask -TaskName 'Twenty CRM - Update' -Action (& $newHiddenAction 'update') -Trigger $updateTrigger -Settings $settings -Force | Out-Null
+    $scriptPath = Join-Path $Root 'crm.ps1'
+    # conhost --headless keeps PowerShell from flashing a console window when the task fires
+    $action = New-ScheduledTaskAction -Execute 'conhost.exe' -Argument "--headless powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`" maintenance"
+    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).Date.AddHours((Get-Date).Hour + 1) -RepetitionInterval (New-TimeSpan -Hours 1)
+    $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopIfGoingOnBatteries -AllowStartIfOnBatteries -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Hours 1)
+    Register-ScheduledTask -TaskName $MaintenanceTaskName -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null
 
-    $backupTrigger = New-ScheduledTaskTrigger -Daily -At '12:00'
-    Register-ScheduledTask -TaskName 'Twenty CRM - Backup' -Action (& $newHiddenAction 'backup') -Trigger $backupTrigger -Settings $settings -Force | Out-Null
-
-    Write-Log 'Scheduled a weekly update (Sundays 9pm) and a daily backup, both running in the background.'
+    Write-Log 'Background maintenance scheduled: updates once a week has passed, backups once a day has passed.'
 }
 
 switch ($Command) {
@@ -142,6 +190,7 @@ switch ($Command) {
         New-EnvFileIfMissing $DevEnvFile 'main' $DevPort
         Write-Log 'Downloading and starting your CRM. The first start takes a few minutes...'
         Update-Project $ProdProject $ProdEnvFile
+        Set-LastRun 'update'
         Register-CrmTasks
         Write-Log "Done. Open http://localhost:$ProdPort to create your login."
     }
@@ -169,37 +218,29 @@ switch ($Command) {
     }
 
     'update' {
-        if (-not (Test-Path $ProdEnvFile)) { exit 0 }
-        if (-not (Test-DockerRunning)) { exit 0 }
-        try {
-            Update-Project $ProdProject $ProdEnvFile
-            if (Test-ProjectRunning $DevProject) { Update-Project $DevProject $DevEnvFile }
-        }
-        catch {
-            Write-Log "Update failed: $($_.Exception.Message)"
-            exit 1
-        }
+        Assert-DockerRunning
+        Invoke-Update
+        Write-Log 'CRM updated to the latest version.'
     }
 
     'backup' {
+        Assert-DockerRunning
+        if (-not (Test-ProjectRunning $ProdProject)) { throw 'The CRM is not running, so there is nothing to back up.' }
+        Invoke-Backup
+    }
+
+    'maintenance' {
         if (-not (Test-Path $ProdEnvFile)) { exit 0 }
-        if (-not (Test-DockerRunning)) { exit 0 }
+        $isBackupDue = Test-Due 'backup' $BackupInterval
+        $isUpdateDue = Test-Due 'update' $UpdateInterval
+        if (-not ($isBackupDue -or $isUpdateDue)) { exit 0 }
+        if (-not (Wait-ForDocker)) { exit 0 }
         if (-not (Test-ProjectRunning $ProdProject)) { exit 0 }
-        $directory = Get-BackupDirectory
-        $stamp = Get-Date -Format 'yyyy-MM-dd_HHmm'
-        try {
-            Invoke-Compose $ProdProject $ProdEnvFile @('exec', '-T', 'db', 'pg_dump', '-U', 'postgres', '-d', 'default', '-Fc', '-f', '/tmp/crm-backup.dump')
-            Invoke-Compose $ProdProject $ProdEnvFile @('cp', 'db:/tmp/crm-backup.dump', (Join-Path $directory "crm-database_$stamp.dump"))
-            Invoke-Compose $ProdProject $ProdEnvFile @('exec', '-T', 'server', 'tar', 'czf', '/tmp/crm-files.tgz', '-C', '/app/packages/twenty-server', '.local-storage')
-            Invoke-Compose $ProdProject $ProdEnvFile @('cp', 'server:/tmp/crm-files.tgz', (Join-Path $directory "crm-files_$stamp.tgz"))
-            foreach ($pattern in @('crm-database_*.dump', 'crm-files_*.tgz')) {
-                Get-ChildItem $directory -Filter $pattern | Sort-Object Name -Descending | Select-Object -Skip $BackupsToKeep | Remove-Item -Force
-            }
-            Write-Log "Backup saved to $directory"
+        if ($isBackupDue) {
+            try { Invoke-Backup } catch { Write-Log "Backup failed: $($_.Exception.Message)" }
         }
-        catch {
-            Write-Log "Backup failed: $($_.Exception.Message)"
-            exit 1
+        if ($isUpdateDue) {
+            try { Invoke-Update; Write-Log 'Weekly update installed.' } catch { Write-Log "Update failed: $($_.Exception.Message)" }
         }
     }
 
