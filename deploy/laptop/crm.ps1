@@ -36,8 +36,20 @@ function Write-Log([string]$Message) {
 }
 
 function Test-DockerRunning {
-    docker info *> $null
-    return $LASTEXITCODE -eq 0
+    # Windows PowerShell 5.1 turns redirected native stderr into a terminating error under 'Stop'
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'SilentlyContinue'
+    try {
+        docker info *> $null
+        $isRunning = $LASTEXITCODE -eq 0
+    }
+    catch {
+        $isRunning = $false
+    }
+    finally {
+        $ErrorActionPreference = $previousPreference
+    }
+    return $isRunning
 }
 
 function Assert-DockerRunning {
